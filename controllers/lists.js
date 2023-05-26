@@ -142,7 +142,7 @@ exports.deleteList = async (req, res) => {
         .json({ success: false, message: "id is required" });
     }
 
-    const list = await List.findOneAndDelete(id);
+    const list = await List.findByIdAndRemove(id);
     if (!list) {
       return res.status(404).json({
         success: false,
