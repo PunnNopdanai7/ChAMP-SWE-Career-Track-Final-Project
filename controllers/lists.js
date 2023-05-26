@@ -1,4 +1,5 @@
 const List = require("../models/List");
+const Task = require("../models/Task");
 
 //@desc     Get all lists
 //@route    Get /api/v1/lists/
@@ -142,13 +143,16 @@ exports.deleteList = async (req, res) => {
         .json({ success: false, message: "id is required" });
     }
 
-    const list = await List.findByIdAndRemove(id);
+    const list = await List.findByIdAndRemove({ _id: id });
     if (!list) {
       return res.status(404).json({
         success: false,
         message: `No list with the id of ${req.params.id}`,
       });
     }
+
+    // Delete all tasks associated with the list
+    await Task.deleteMany({ list: id });
 
     return res.status(200).json({ success: true, data: {} });
   } catch (error) {
