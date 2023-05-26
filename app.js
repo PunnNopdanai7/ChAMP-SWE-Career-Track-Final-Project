@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 
 //Route files
 const tasks = require("./routes/tasks");
+const lists = require("./routes/lists");
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/api/v1/tasks", tasks);
+app.use("/api/v1/lists", lists);
 
 module.exports = app;
