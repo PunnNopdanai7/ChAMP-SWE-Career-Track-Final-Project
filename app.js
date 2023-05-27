@@ -13,6 +13,9 @@ const swaggerJsdoc = require("swagger-jsdoc");
 
 const app = express();
 
+const PORT = process.env.PORT ?? "8080";
+const API_HOST = process.env.API_HOST ?? "localhost";
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 
@@ -25,7 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 // Enable CORS
 app.use(cors());
 
-const PORT = process.env.PORT ?? "8080";
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: "3.0.0",
@@ -36,7 +38,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${PORT}`,
+        url: `http://${API_HOST}:${PORT}`,
       },
     ],
   },
