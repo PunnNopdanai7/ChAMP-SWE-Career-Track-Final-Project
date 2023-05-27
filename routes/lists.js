@@ -62,7 +62,7 @@ module.exports = router;
  * @swagger
  * /api/v1/lists:
  *  get:
- *   summary: Returns the list of all the lists
+ *   summary: Returns the array of all the lists
  *   tags: [Lists]
  *   responses:
  *    200:
@@ -75,7 +75,6 @@ module.exports = router;
  *         $ref: '#/components/schemas/List'
  *    500:
  *      description: Some server error
- *
  */
 
 /**
@@ -105,7 +104,6 @@ module.exports = router;
  *      description: The list was not found
  *    500:
  *      description: Some server error
- *
  */
 
 /**
@@ -146,7 +144,6 @@ module.exports = router;
  *     description: Bad request, the input was invalid
  *    500:
  *     description: Some server error
- *
  */
 
 /**
@@ -154,7 +151,7 @@ module.exports = router;
  * @swagger
  * /api/v1/lists/{id}:
  *  put:
- *   summary: Update a list
+ *   summary: Update a list by id
  *   tags: [Lists]
  *   parameters:
  *    - in: path
@@ -189,7 +186,6 @@ module.exports = router;
  *     description: The list was not found
  *    500:
  *     description: Some server error
- *
  */
 
 /**
@@ -197,7 +193,7 @@ module.exports = router;
  * @swagger
  * /api/v1/lists/{id}:
  *  delete:
- *   summary: Delete a list, all the tasks in the list will be cascade deleted too
+ *   summary: Delete a list by id, all the tasks in the list will be cascade deleted too
  *   tags: [Lists]
  *   parameters:
  *    - in: path
