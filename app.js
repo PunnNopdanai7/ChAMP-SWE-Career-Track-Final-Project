@@ -7,6 +7,10 @@ const cookieParser = require("cookie-parser");
 const tasks = require("./routes/tasks");
 const lists = require("./routes/lists");
 
+// Swagger
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -20,6 +24,27 @@ app.use(express.urlencoded({ extended: true }));
 
 // Enable CORS
 app.use(cors());
+
+const PORT = process.env.PORT ?? "8080";
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Taks and List management API",
+      version: "1.0.0",
+      description: "API to manage tasks and lists",
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 app.use("/api/v1/tasks", tasks);
 app.use("/api/v1/lists", lists);
