@@ -6,7 +6,11 @@ const List = require("../models/List");
 //@access   Public
 exports.getTasks = async (req, res) => {
   try {
-    const task = await Task.find();
+    const { list } = req.query ?? {};
+
+    const task = await Task.find({
+      ...(list && { list }),
+    });
     return res.status(200).json({ success: true, data: task });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -119,6 +123,70 @@ exports.updateTask = async (req, res) => {
     // Check if order is already taken
     const foundTasksWithSameOrder = await Task.find({ order, list });
 
+    if (foundTasksWithSameOrder.length > 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "order is already taken" });
+    }
+
+    const updatedTask = await Task.findByIdAndUpdate(
+      id,
+      {
+        ...req.body,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedTask) {
+      return res.status(404).json({
+        success: false,
+        message: `No task with the id of ${req.params.id}`,
+      });
+    }
+
+    return res.status(200).json({ success: true, data: updatedTask });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+//@desc     Move task to another list
+//@route    Post /api/v1/tasks/:id/move
+//@access   Public
+exports.moveTask = async (req, res) => {
+  try {
+    const { id } = req.params ?? {};
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "id is required" });
+    }
+
+    const { order, list } = req.body ?? {};
+
+    if (!order || !Number.isInteger(Number(order)) || Number(order) < 1) {
+      return res
+        .status(400)
+        .json({ success: false, message: "order is required" });
+    }
+
+    if (!list) {
+      return res
+        .status(400)
+        .json({ success: false, message: "listId is required" });
+    }
+
+    // Check if list with the given ID exists
+    const foundList = await List.findById(list);
+
+    if (!foundList) {
+      return res
+        .status(404)
+        .json({ success: false, message: "listId is invalid" });
+    }
+
+    // Check if order is already taken
+    const foundTasksWithSameOrder = await Task.find({ order, list });
     if (foundTasksWithSameOrder.length > 0) {
       return res
         .status(400)
